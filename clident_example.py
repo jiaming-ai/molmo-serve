@@ -33,6 +33,7 @@ def call_vlm_multiple_image(image_list: list[str], text: str) -> str:
     data = {
         "image_base64": [encode_image_to_base64(image) for image in image_list], # base64 encoded image,
         "text": text,   
+        "model_name": "qwen_7B"
     }
     res = requests.post(f"{host}/generate", json=data)
     
