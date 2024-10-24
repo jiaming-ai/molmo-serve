@@ -16,10 +16,25 @@ def call_vlm(image: str, text: str) -> str:
     """
     
     data = {
-        "image_base64": encode_image_to_base64(image), # base64 encoded image,
+        "image_base64": [encode_image_to_base64(image)], # base64 encoded image,
         "text": text,   
     }
-    res = requests.post("http://localhost:8000/generate", json=data)
+    res = requests.post(f"{host}/generate", json=data)
+    
+    if res.status_code != 200:
+        raise Exception(f"Failed to call VLM: {res.text}")
+    
+    return res.json()
+
+def call_vlm_multiple_image(image_list: list[str], text: str) -> str:
+    """
+    """
+    
+    data = {
+        "image_base64": [encode_image_to_base64(image) for image in image_list], # base64 encoded image,
+        "text": text,   
+    }
+    res = requests.post(f"{host}/generate", json=data)
     
     if res.status_code != 200:
         raise Exception(f"Failed to call VLM: {res.text}")
@@ -55,7 +70,8 @@ def draw_points(image_path, model_response):
     plt.show()
     
 if __name__ == "__main__":
-    image_path = "data/knife.jpg"
+    host = "http://localhost:8000"
+    # image_path = "data/knife.jpg"
     task = "cutting a cucumber"
     # text = "where the robot should grasp the knife to pick it up? Answer with a point on the image."
     text = f"""You are an intelligent system that can specifiy a grasping point for a robot to pick up an object. Given an image of the scene and a task description, you should provide a point on the image where the robot should grasp the object to best accomplish the task. 
@@ -64,6 +80,8 @@ if __name__ == "__main__":
     You should think carefully about the robots grasp postion that can best accomplish the task.
     Answer with a point on the image."""
     
-    res = call_vlm(image_path, text)
+    # res = call_vlm(image_path, text)
+    res = call_vlm_multiple_image(["data/knife.jpg","data/mug.jpg"], "what's the use of these two objects?")
+
     print(res)
-    draw_points(image_path, res['response'])
+    # draw_points(image_path, res['response'])
