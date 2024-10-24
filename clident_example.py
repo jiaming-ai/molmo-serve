@@ -4,7 +4,7 @@ import re
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
-
+import argparse
 # Function to encode an image to base64
 def encode_image_to_base64(image_path):
     with open(image_path, 'rb') as image_file:
@@ -70,7 +70,12 @@ def draw_points(image_path, model_response):
     plt.show()
     
 if __name__ == "__main__":
-    host = "http://localhost:8000"
+    arg = argparse.ArgumentParser()
+    arg.add_argument("--host", type=str, default="http://localhost:8000")
+    
+    args = arg.parse_args()
+    host = args.host
+    
     # image_path = "data/knife.jpg"
     task = "cutting a cucumber"
     # text = "where the robot should grasp the knife to pick it up? Answer with a point on the image."
