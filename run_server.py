@@ -10,7 +10,7 @@ from io import BytesIO
 import time
 from transformers import Qwen2VLForConditionalGeneration, AutoTokenizer, AutoProcessor
 from qwen_vl_utils import process_vision_info
-
+import argparse
 bf16 = False
 processor = None
 model = None
@@ -211,8 +211,14 @@ def test_model():
     print(res)
 
 if __name__ == "__main__":
+    arg = argparse.ArgumentParser()
+    arg.add_argument("--host", type=str, default="localhost")
+    arg.add_argument("--port", type=int, default=8000)
+    args = arg.parse_args()
+    host = args.host
+    port = args.port
     load_model()
-    uvicorn.run(app, host="localhost", port=8000)
+    uvicorn.run(app, host=host, port=port)
     # test_model()
     
     
